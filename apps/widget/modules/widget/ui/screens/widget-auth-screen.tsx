@@ -17,17 +17,18 @@ import { api } from "@workspace/backend/_generated/api";
 import { use } from "react";
 import { userAgent } from "next/server";
 import { Doc } from "@workspace/backend/_generated/dataModel";
+import { useAtomValue, useSetAtom } from "jotai";
+import { contactSessionIdAtomFamily, organizationIdAtom } from "../../atoms/widget-atoms";
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
   email: z.string().email("enter a valid email"),
 });
 
 
-//Temp
-const organizationId = "org_31ZIGLylabbstDnhx5uxW0Xw4Ht";
-
 
 export const WidgetAuthScreen = () => {
+  const organizationId = useAtomValue(organizationIdAtom);
+  const setContactSessionId = useSetAtom(contactSessionIdAtomFamily(organizationId || ""));
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -66,7 +67,7 @@ export const WidgetAuthScreen = () => {
 
 
 
-    console.log(contactSessionId);
+    setContactSessionId(contactSessionId);
   };
 
   return (
@@ -74,7 +75,7 @@ export const WidgetAuthScreen = () => {
       <WidgetHeader>
         <div className="font-semibold flex flex-col justify-between gap-y-2 px-2 py-6">
           <p className="text-3xl">Hi there! 👋</p>
-          <p className="text-lg">let's get you started</p>
+          <p className="text-lg">let&apos;s get you started</p>
         </div>
       </WidgetHeader>
       <Form {...form}>
