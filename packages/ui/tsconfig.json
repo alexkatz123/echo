@@ -4,7 +4,11 @@
     "baseUrl": ".",
     "paths": {
       "@workspace/ui/*": ["./src/*"]
-    }
+    },
+    "moduleResolution": "bundler",
+    "module": "esnext",
+    "jsx": "react-jsx",
+    "verbatimModuleSyntax": true
   },
   "include": ["."],
   "exclude": ["node_modules", "dist"]

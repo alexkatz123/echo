@@ -1,5 +1,5 @@
-import { Button } from "./button.js";
-import { cn } from "../lib/utils.js";
+import { Button } from "./button";
+import { cn } from "../lib/utils";
 
 interface InfinateScrollTriggerProps {
   canLoadMore: boolean;
