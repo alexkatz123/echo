@@ -18,7 +18,7 @@ import { use } from "react";
 import { userAgent } from "next/server";
 import { Doc } from "@workspace/backend/_generated/dataModel";
 import { useAtomValue, useSetAtom } from "jotai";
-import { contactSessionIdAtomFamily, organizationIdAtom } from "../../atoms/widget-atoms";
+import { contactSessionIdAtomFamily, organizationIdAtom, screenAtom } from "../../atoms/widget-atoms";
 const formSchema = z.object({
   name: z.string().min(1, "Name is required"),
   email: z.string().email("enter a valid email"),
@@ -27,6 +27,7 @@ const formSchema = z.object({
 
 
 export const WidgetAuthScreen = () => {
+  const setScreen = useSetAtom(screenAtom);
   const organizationId = useAtomValue(organizationIdAtom);
   const setContactSessionId = useSetAtom(contactSessionIdAtomFamily(organizationId || ""));
   const form = useForm<z.infer<typeof formSchema>>({
@@ -68,6 +69,7 @@ export const WidgetAuthScreen = () => {
 
 
     setContactSessionId(contactSessionId);
+    setScreen("selection");
   };
 
   return (
