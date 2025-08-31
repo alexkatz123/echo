@@ -124,7 +124,7 @@ export const create = mutation({
       message:  {
         role: "assistant",
         // TODO: customization options
-        content: "Hello! How can I help you today?"
+        content: `Hello ${session.name} How can I help you today?`
       }
     })
 
