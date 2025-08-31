@@ -1,9 +1,53 @@
 import { ConvexError, v } from "convex/values";
-import { mutation, query } from "../_generated/server";
+import { generateText } from "ai";
+import { action, mutation, query } from "../_generated/server";
 import { components } from "../_generated/api";
 import { supportAgent } from "../system/ai/agents/supportAgent";
 import { paginationOptsValidator } from "convex/server";
 import { saveMessage } from "@convex-dev/agent";
+import { openai } from "@ai-sdk/openai";
+
+export const enhanceResponse = action({
+  args: {
+    prompt: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (identity === null) {
+      throw new ConvexError({
+        code: "UNAUTHORIZED",
+        message: "Invalid session",
+      });
+    }
+
+    const orgId = identity.orgId as string;
+
+    if (!orgId) {
+      throw new ConvexError({
+        code: "UNAUTHORIZED",
+        message: "Invalid session",
+      });
+    }
+
+    const response = await generateText({
+      model: openai("gpt-4o-mini"),
+      messages: [
+        {
+          role: "system",
+          content:
+            "Enhance the operator's message to be more professional, clear and helpful while maintaining their original intent and key information.",
+        },
+        {
+          role: "user",
+          content: args.prompt,
+        },
+      ],
+    });
+
+    return response.text;
+  },
+});
 
 export const create = mutation({
   args: {
@@ -39,11 +83,11 @@ export const create = mutation({
     }
 
     if (conversation.organizationId !== orgId) {
-            throw new ConvexError({
-                code: "UNAUTHORIZED",
-                message: "Invalid session",
-            });
-        }
+      throw new ConvexError({
+        code: "UNAUTHORIZED",
+        message: "Invalid session",
+      });
+    }
 
     if (conversation.status === "resolved") {
       throw new ConvexError({
@@ -53,13 +97,13 @@ export const create = mutation({
     }
 
     await saveMessage(ctx, components.agent, {
-          threadId: conversation.threadId,
-          agentName: identity.familyName,
-          message:  {
-            role: "assistant",
-            content: args.prompt,
-          }
-        })
+      threadId: conversation.threadId,
+      agentName: identity.familyName,
+      message: {
+        role: "assistant",
+        content: args.prompt,
+      },
+    });
   },
 });
 
@@ -88,23 +132,23 @@ export const getMany = query({
     }
 
     const conversation = await ctx.db
-        .query("conversations")
-        .withIndex("by_thread_id", (q) => q.eq("threadId", args.threadId))
-        .unique();
+      .query("conversations")
+      .withIndex("by_thread_id", (q) => q.eq("threadId", args.threadId))
+      .unique();
 
-        if (!conversation) {
-            throw new ConvexError({
-                code: "NOT_FOUND",
-                message: "Conversation not found",
-            });
-        }
+    if (!conversation) {
+      throw new ConvexError({
+        code: "NOT_FOUND",
+        message: "Conversation not found",
+      });
+    }
 
-        if (conversation.organizationId !== orgId) {
-            throw new ConvexError({
-                code: "UNAUTHORIZED",
-                message: "Invalid session",
-            });
-        }
+    if (conversation.organizationId !== orgId) {
+      throw new ConvexError({
+        code: "UNAUTHORIZED",
+        message: "Invalid session",
+      });
+    }
 
     const paginated = await supportAgent.listMessages(ctx, {
       threadId: args.threadId,
