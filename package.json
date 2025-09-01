@@ -41,7 +41,7 @@
     "prettier": "^3.5.1",
     "react-hook-form": "^7.62.0",
     "turbo": "^2.4.2",
-    "typescript": "5.7.3"
+    "typescript": "5.8.3"
   },
   "packageManager": "pnpm@10.4.1",
   "engines": {
