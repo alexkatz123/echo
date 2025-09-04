@@ -46,6 +46,7 @@
     "@workspace/math": "workspace:*",
     "@workspace/ui": "workspace:*",
     "ai": "4.3.19",
+    "bowser": "2.12.0",
     "class-variance-authority": "^0.7.1",
     "cmdk": "^1.1.1",
     "convex": "1.25.4",
