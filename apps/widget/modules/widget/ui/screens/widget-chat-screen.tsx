@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { DicebearAvatar } from "@workspace/ui/components/dicebearAvatar"
 import { useInfiniteScroll } from "@workspace/ui/hooks/use-infinite-scroll"
 import { InfiniteScrollTrigger } from "@workspace/ui/components/infinite-scroll-trigger"
-import { z } from "zod";
+import { object, z } from "zod";
 import { useForm } from "react-hook-form";
 import { useThreadMessages, toUIMessages } from "@convex-dev/agent/react";
 import { Button } from "@workspace/ui/components/button";
@@ -16,6 +16,7 @@ import {
   conversationIdAtom,
   organizationIdAtom,
   screenAtom,
+  widgetSettingsAtom,
 } from "../../atoms/widget-atoms";
 import { useAction, useQuery } from "convex/react";
 import { api } from "@workspace/backend/_generated/api";
@@ -41,6 +42,7 @@ import {
   AISuggestions,
 } from "@workspace/ui/components/ai/suggestion";
 import { Form, FormField } from "@workspace/ui/components/form";
+import { useMemo } from "react";
 
 const formSchema = z.object({
   message: z.string().min(1, "Message is required"),
@@ -50,6 +52,7 @@ export const WidgetChatScreen = () => {
   const setScreen = useSetAtom(screenAtom);
   const setConversationId = useSetAtom(conversationIdAtom);
 
+  const widgetSettings = useAtomValue(widgetSettingsAtom);
   const conversationId = useAtomValue(conversationIdAtom);
   const organizationId = useAtomValue(organizationIdAtom);
   const contactSessionId = useAtomValue(
@@ -70,6 +73,21 @@ export const WidgetChatScreen = () => {
     setConversationId(null);
     setScreen("selection");
   };
+
+  const suggestions = useMemo(() => {
+    if (!widgetSettings) {
+      return [];
+    }
+
+    return Object.keys(widgetSettings.defaultSuggestions).map((key) => {
+      return widgetSettings.defaultSuggestions[
+        key as keyof typeof widgetSettings.defaultSuggestions
+      ];
+    })
+
+  }, [widgetSettings]);
+
+
   const messages = useThreadMessages(
     api.public.messages.getMany,
     conversation?.threadId && contactSessionId
@@ -151,6 +169,28 @@ export const WidgetChatScreen = () => {
           })}
         </AIConversationContent>
       </AIConversation>
+
+      {toUIMessages(messages.results ?? []).length === 1 && (
+      <AISuggestions className="flex w-full flex-col items-end p-2">
+        {suggestions.map((suggestion) => {
+          if (!suggestion) {
+            return null
+          }
+
+          return (
+            <AISuggestion key={suggestion} onClick={() => {
+              form.setValue("message", suggestion, {
+                shouldValidate: true,
+                shouldDirty: true,
+                shouldTouch: true,
+              });
+              form.handleSubmit(onSubmit)();
+            }} suggestion={suggestion} />
+          )
+        })}
+      </AISuggestions>
+      )}
+
       <Form {...form}>
         <AIInput
           className="rounded-none border-x-0 border-b-0"
