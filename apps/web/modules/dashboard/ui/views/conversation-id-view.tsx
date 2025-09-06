@@ -37,6 +37,7 @@ import { ConversationStatusButton } from "../components/conversation-status-butt
 import { useState } from "react";
 import { cn } from "@workspace/ui/lib/utils";
 import { Skeleton } from "@workspace/ui/components/skeleton";
+import { Protect } from "@clerk/nextjs";
 
 const formSchema = z.object({
   message: z.string().min(1, "Message is required"),
@@ -221,7 +222,8 @@ export const ConversationIdView = ({
             />
             <AIInputToolbar>
               <AIInputTools>
-                <AIInputButton
+                <Protect condition={(has) => has({ plan: "pro" })}>
+                  <AIInputButton
                   disabled={
                     conversation?.status === "resolved" ||
                     isUpdatingStatus ||
@@ -234,6 +236,7 @@ export const ConversationIdView = ({
                   <Wand2Icon />
                   {isEnhancing ? "Enhancing..." : "Enhance"}
                 </AIInputButton>
+                </Protect>
               </AIInputTools>
               <AIInputSubmit
                 disabled={
