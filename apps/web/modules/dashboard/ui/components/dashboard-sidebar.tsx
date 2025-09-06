@@ -6,6 +6,7 @@ import {
   InboxIcon,
   LayoutDashboardIcon,
   LibraryBigIcon,
+  LockIcon,
   Mic,
   PaletteIcon,
 } from "lucide-react";
@@ -28,17 +29,20 @@ import {
   SidebarTrigger,
 } from "@workspace/ui/components/sidebar";
 import { cn } from "@workspace/ui/lib/utils";
+import { SidebarIcon } from "./sidebar-icon";
 
 const customerSupportItems = [
   {
     title: "Conversations",
     url: "/conversations",
     icon: InboxIcon,
+    lockIcon: InboxIcon,
   },
   {
     title: "Knowledge Base",
     url: "/files",
     icon: LibraryBigIcon,
+    lockIcon: LockIcon,
   },
 ];
 
@@ -47,16 +51,19 @@ const configurationItems = [
     title: "Widget Customization",
     url: "/customization",
     icon: PaletteIcon,
+    lockIcon: LockIcon,
   },
   {
     title: "Integrations",
     url: "/integrations",
     icon: LayoutDashboardIcon,
+    lockIcon: LayoutDashboardIcon,
   },
   {
     title: "Voice Assistant",
     url: "/plugins/vapi",
     icon: Mic,
+    lockIcon: LockIcon,
   },
 ];
 
@@ -65,10 +72,11 @@ const accountItems = [
     title: "Plans & Billing",
     url: "/billing",
     icon: CreditCardIcon,
+    lockIcon: CreditCardIcon,
   },
 ];
 
-export const DashboardSidebar = () => {
+export const DashboardSidebar = ({ pro }: { pro: boolean }) => {
   const pathname = usePathname();
 
   const isActive = (url: string) => {
@@ -119,7 +127,11 @@ export const DashboardSidebar = () => {
                     )}
                   >
                     <Link href={item.url}>
-                      <item.icon className="size-4" />
+                      {pro ? (
+                        <item.icon className="size-4" />
+                      ) : (
+                        <item.lockIcon className="size-4" />
+                      )}
                       <span>{item.title}</span>
                     </Link>
                   </SidebarMenuButton>
@@ -145,7 +157,11 @@ export const DashboardSidebar = () => {
                     )}
                   >
                     <Link href={item.url}>
-                      <item.icon className="size-4" />
+                      {pro ? (
+                        <item.icon className="size-4" />
+                      ) : (
+                        <item.lockIcon className="size-4" />
+                      )}
                       <span>{item.title}</span>
                     </Link>
                   </SidebarMenuButton>
@@ -171,7 +187,11 @@ export const DashboardSidebar = () => {
                     )}
                   >
                     <Link href={item.url}>
-                      <item.icon className="size-4" />
+                      {pro ? (
+                        <item.icon className="size-4" />
+                      ) : (
+                        <item.lockIcon className="size-4" />
+                      )}
                       <span>{item.title}</span>
                     </Link>
                   </SidebarMenuButton>
@@ -203,6 +223,3 @@ export const DashboardSidebar = () => {
     </Sidebar>
   );
 };
-
-
-// "w-full! p-2! hover:bg-sidebar-accent! hover:text-sidebar-accent-foreground! group-data-[collapsible=icon]:size-8! group-data-[collapsible=icon]:p-2!"

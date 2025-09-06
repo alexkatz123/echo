@@ -1,9 +1,7 @@
+import { BillingView } from "@/modules/billing/ui/views/billing-view";
+
 const Page = () => {
-    return (
-        <div>
-            <h1>billing</h1>
-        </div>
-    );
+    return <BillingView />;
 }
  
 export default Page;
