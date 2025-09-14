@@ -66,14 +66,16 @@ export const create = action({
     if (shouldTriggerAgent) {
       await supportAgent.generateText(
         ctx,
-        { threadId: args.threadId },
         {
-          prompt: args.prompt,
+          threadId: args.threadId,
           tools: {
             resolveConversationTool: resolveConversation,
             escalateConversationTool: escalateConversation,
             searchTool: search,
           },
+        },
+        {
+          prompt: args.prompt,
         }
       );
     } else {
