@@ -6,7 +6,7 @@ import { supportAgent } from "../agents/supportAgent";
 export const escalateConversation = (createTool as any)({
     description: "Escalate a conversation",
     args: z.object({}),
-    handler: async (ctx) => {
+    handler: async (ctx: any) => {
         if (!ctx.threadId) {
             return "Missing thread ID"
         }

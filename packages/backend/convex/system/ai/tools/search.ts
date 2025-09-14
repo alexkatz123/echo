@@ -12,7 +12,7 @@ export const search = (createTool as any)({
     args: z.object({
         query: z.string().describe("The search query to find relevant information")
     }),
-    handler: async (ctx, args) => {
+    handler: async (ctx: any, args: { query: string }) => {
         if (!ctx.threadId) {
             return "missing thread id"
         }
