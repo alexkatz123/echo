@@ -104,7 +104,7 @@ export const getMany = query({
       });
     }
 
-    const paginated = await supportAgent.listMessages(ctx, {
+    const paginated = await (supportAgent as any).listMessages(ctx, {
       threadId: args.threadId,
       paginationOpts: args.paginationOpts,
     });

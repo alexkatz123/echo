@@ -3,7 +3,7 @@ import { z } from "zod";
 import { internal } from "../../../_generated/api";
 import { supportAgent } from "../agents/supportAgent";
 
-export const escalateConversation = createTool({
+export const escalateConversation = (createTool as any)({
     description: "Escalate a conversation",
     args: z.object({}),
     handler: async (ctx) => {
@@ -13,7 +13,7 @@ export const escalateConversation = createTool({
 
         await ctx.runMutation(internal.system.conversations.escalate, { threadId: ctx.threadId });
 
-        await supportAgent.saveMessage(ctx, {
+        await (supportAgent as any).saveMessage(ctx, {
             threadId: ctx.threadId,
             message: {
                 role: "assistant",
