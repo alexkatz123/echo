@@ -7,12 +7,12 @@ import { supportAgent } from "../agents/supportAgent";
 import rag from "../rag";
 import { SEARCH_INTERPRETER_PROMPT } from "../constants";
 
-export const search = createTool({
+export const search = (createTool as any)({
     description: "Search the knowledge base for relevant information to help answer user questions",
     args: z.object({
         query: z.string().describe("The search query to find relevant information")
     }),
-    handler: async (ctx, args) => {
+    handler: async (ctx: any, args: { query: string }) => {
         if (!ctx.threadId) {
             return "missing thread id"
         }
@@ -53,7 +53,7 @@ export const search = createTool({
             ]
         })
 
-        await supportAgent.saveMessage(ctx, {
+        await (supportAgent as any).saveMessage(ctx, {
             threadId: ctx.threadId,
             message: {
                 role: "assistant",

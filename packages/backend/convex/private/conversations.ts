@@ -170,7 +170,7 @@ export const getMany = query({
           return null;
         }
 
-        const messages = await supportAgent.listMessages(ctx, {
+        const messages = await (supportAgent as any).listMessages(ctx, {
           threadId: conversation.threadId,
           paginationOpts: { numItems: 1, cursor: null },
         });

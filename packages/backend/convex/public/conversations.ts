@@ -32,7 +32,7 @@ export const getMany = query({
       conversations.page.map(async (conversation) => {
         let lastMessage: MessageDoc | null = null
 
-        const messages = await supportAgent.listMessages(ctx, {
+        const messages = await (supportAgent as any).listMessages(ctx, {
           threadId: conversation.threadId,
           paginationOpts: { numItems: 1, cursor: null }
         });
@@ -120,7 +120,7 @@ export const create = mutation({
       .withIndex("by_organization_id", (q) => q.eq("organizationId", args.organizationId))
       .unique()
 
-    const { threadId } = await supportAgent.createThread(ctx, {
+    const { threadId } = await (supportAgent as any).createThread(ctx, {
       userId: args.organizationId,
     })
 

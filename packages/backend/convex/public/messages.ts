@@ -64,16 +64,19 @@ export const create = action({
     const shouldTriggerAgent = conversation.status === "unresolved" && subscription?.status === "active";
 
     if (shouldTriggerAgent) {
-      await supportAgent.generateText(
+      // Cast to any to avoid excessively deep TS instantiation from generic-heavy types
+      await (supportAgent as any).generateText(
         ctx,
-        { threadId: args.threadId },
         {
-          prompt: args.prompt,
+          threadId: args.threadId,
           tools: {
             resolveConversationTool: resolveConversation,
             escalateConversationTool: escalateConversation,
             searchTool: search,
           },
+        },
+        {
+          prompt: args.prompt,
         }
       );
     } else {
@@ -101,7 +104,7 @@ export const getMany = query({
       });
     }
 
-    const paginated = await supportAgent.listMessages(ctx, {
+    const paginated = await (supportAgent as any).listMessages(ctx, {
       threadId: args.threadId,
       paginationOpts: args.paginationOpts,
     });
