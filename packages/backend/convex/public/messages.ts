@@ -64,7 +64,8 @@ export const create = action({
     const shouldTriggerAgent = conversation.status === "unresolved" && subscription?.status === "active";
 
     if (shouldTriggerAgent) {
-      await supportAgent.generateText(
+      // Cast to any to avoid excessively deep TS instantiation from generic-heavy types
+      await (supportAgent as any).generateText(
         ctx,
         {
           threadId: args.threadId,
